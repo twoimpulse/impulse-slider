@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta content="charset=utf-8">
+	<title>ImpulseSlider Demo</title>
+	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+	<link rel="stylesheet" href="css/impulseslider.css" type="text/css" media="screen" />
+</head>
+<body>
+<div class="container">
+
+    <div class="nav">
+        <span class="left arrow" style="">&lt;</span>
+        <span class="right arrow">&gt;</span>
+    </div>
+    <div id="cubeCarousel">
+        <div id="cubeSpinner">
+            <div class="face one">
+                 <img class="img_slider active" src="img/artist.jpg">
+            </div>
+            <div class="face two">
+                <img class="img_slider" src="img/milkyway.jpg">
+            </div>
+            <div class="face three">
+                <img class="img_slider" src="img/nebula.jpg">
+            </div>
+            <div class="face four">
+                <img class="img_slider" src="img/saturn.jpg">
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script src="../jquery-1.8.2.min.js"></script>
+<script src="../jquery.impulse.slider-0.2.js"></script>
+<script type="text/javascript">
+    $(window).load(function(){
+      $('#cubeSpinner').impulseslider({
+          height: 200,
+          width: 300,
+          pauseTime: 5000,
+          transitionDuration: 1500,
+          transitionEffect: "linear",
+          autostart: true,
+          rightSelector: ".right",
+          leftSelector: ".left",
+          directionRight: true,
+          containerSelector: "#cubeCarousel",
+          spinnerSelector: "#cubeSpinner"
+      });
+    });
+  </script>
+  
+</body>
+</html>

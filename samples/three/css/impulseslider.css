@@ -1,0 +1,82 @@
+@import url(http://fonts.googleapis.com/css?family=Lato:300,400,700);
+
+@font-face {
+    font-family: 'fontawesome';
+    src: url('../fonts/fontawesome.eot');
+    src: url('../fonts/fontawesome.eot?#iefix') format('embedded-opentype'), url('../fonts/fontawesome.svg#fontawesome') format('svg'), url('../fonts/fontawesome.woff') format('woff'), url('../fonts/fontawesome.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'Lato', Calibri, Arial, sans-serif;
+
+}
+
+.nav {
+    z-index: 9999;
+    margin: 600px 25px 50px 25px;
+}
+
+.arrow {
+    width: 150px;
+    height: 150px;
+    background: #000000;
+    color: #fff;
+    font-size: 50px;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
+    font-weight: normal;
+    padding: 25px;
+
+    -moz-opacity: 0.70;
+    -khtml-opacity: 0.70;
+    opacity: 0.70;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha"(Opacity = 70 );
+    filter: progid:DXImageTransform.Microsoft.Alpha(opacity = 70);
+    filter: alpha(opacity = 70);
+}
+
+.arrow:hover {
+    background: #cccccc;
+}
+
+.right {
+
+}
+
+.left {
+
+}
+
+/* Slider Styles */
+.container {
+
+}
+
+#slider-container {
+    -webkit-perspective: 800;
+    -moz-perspective: 800px;
+    -o-perspective: 800;
+    perspective: 800px;
+    margin: 50px 0px 0px 80px;
+    border-style: dotted;
+    border-width: 1px;
+}
+
+#slider-container #slider {
+    position: relative;
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    -o-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+
+}
+
+#slider-container .face {
+    position: absolute;
+    padding: 0px;
+}
+
+

@@ -1,0 +1,57 @@
+.arrow {
+    border-radius: 2px 2px 2px 2px;
+    height: 24px;
+    width: 24px;
+    position: absolute;
+    margin-left: 3px;
+    margin-top: 3px;
+    cursor: pointer;
+    z-index: 9999;
+}
+
+.left {
+    background: url("arrows.png") repeat scroll 0 0 transparent;
+    background-position: -68px -36px;
+
+}
+
+.left:hover {
+    background: url("arrows-hover.png") repeat scroll 0 0 transparent;
+    background-position: -68px -36px;
+}
+
+.right {
+    background: url("arrows.png") repeat scroll 0 0 transparent;
+    background-position: -68px -68px;
+    margin-left: 25px;
+}
+
+.right:hover {
+    background: url("arrows-hover.png") repeat scroll 0 0 transparent;
+    background-position: -68px -68px;
+}
+
+
+.nav {
+    margin-left: 500px;
+    margin-top: 60px;
+}
+
+/* Slider Styles */
+#cubeCarousel {
+      margin: 100px  0 auto 100px;
+}
+
+ #cubeCarousel #cubeSpinner {
+   position: relative;
+   -webkit-transform-style: preserve-3d;
+   -moz-transform-style: preserve-3d;
+   -o-transform-style: preserve-3d;
+   transform-style: preserve-3d;
+
+ }
+
+ #cubeCarousel .face {
+   position: absolute;
+   padding: 0px;
+ }

@@ -1,0 +1,35 @@
+{
+    "name": "impulse.slider",
+    "title": "Impulse Slider",
+    "description": "A jQuery 3D Image Slider Plugin.",
+    "keywords": [
+        "3d",
+        "css3",
+        "slider"
+    ],
+    "version": "0.2.0",
+    "author": {
+        "name": "Two Impulse",
+        "url": "http://twoimpulse.com"
+    },
+    "maintainers": [
+        {
+            "name": "Paulo Nunes",
+            "email": "paulo@twoimpulse.com",
+            "url": "http://twoimpulse.com"
+        }
+    ],
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "https://github.com/jquery/jquery-color/blob/2.1.2/MIT-LICENSE.txt"
+        }
+    ],
+    "bugs": "https://github.com/twoimpulse/impulse-slider/issues",
+    "homepage": "https://github.com/twoimpulse/impulse-slider",
+    "docs": "https://github.com/twoimpulse/impulse-slider",
+    "download": "http://code.jquery.com/#color",
+    "dependencies": {
+        "jquery": ">=1.8"
+    }
+}
