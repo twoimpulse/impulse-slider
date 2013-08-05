@@ -28,7 +28,7 @@
     "bugs": "https://github.com/twoimpulse/impulse-slider/issues",
     "homepage": "https://github.com/twoimpulse/impulse-slider",
     "docs": "https://github.com/twoimpulse/impulse-slider",
-    "download": "http://code.jquery.com/#color",
+    "download": "https://github.com/twoimpulse/impulse-slider/archive/0.2.0.zip",
     "dependencies": {
         "jquery": ">=1.8"
     }
