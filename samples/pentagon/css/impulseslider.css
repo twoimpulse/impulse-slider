@@ -1,0 +1,70 @@
+@import url(http://fonts.googleapis.com/css?family=Lato:300,400,700);
+
+@font-face {
+    font-family: 'fontawesome';
+    src: url('../font/fontawesome.eot');
+    src: url('../font/fontawesome.eot?#iefix') format('embedded-opentype'), url('../font/fontawesome.svg#fontawesome') format('svg'), url('../font/fontawesome.woff') format('woff'), url('../font/fontawesome.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'Lato', Calibri, Arial, sans-serif;
+
+}
+
+.nav {
+    z-index: 9999;
+
+}
+
+.arrow {
+    width: 50px;
+    height: 50px;
+    background: #fff;
+    color: #000;
+    font-size: 20px;
+    text-align: center;
+    line-height: 20px;
+    cursor: pointer;
+    font-weight: normal;
+    padding: 5px;
+    position: relative;
+    top: 350px;
+    margin-left: auto;
+    margin-right: auto;
+
+    -moz-opacity: 0.70;
+    -khtml-opacity: 0.70;
+    opacity: 0.70;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha"(Opacity = 70 );
+    filter: progid:DXImageTransform.Microsoft.Alpha(opacity = 70);
+    filter: alpha(opacity = 70);
+}
+
+.arrow:hover {
+    background: #0066cc;
+}
+
+#slider-container {
+    margin-left:auto;
+    margin-right:auto;
+    margin-top: 100px;
+}
+
+#slider-container #slider {
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    -o-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+
+}
+
+#slider-container .face {
+    position: absolute;
+    padding: 0px;
+}
+
+
+
+
