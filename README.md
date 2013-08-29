@@ -2,11 +2,11 @@ impulse-slider
 ==============
 
 A jQuery 3D Image Slider Plugin
-ImpulseSlider is a 3d image slider  jQuery plugin that takes advantage of the power of CSS3 transforms and jQuery. The goal is that anyone can simply include it in a HTML page without having to code.
+ImpulseSlider is a 3d image slider jQuery plugin that takes advantage of the power of CSS3 transforms and jQuery.
+
 
 Roadmap
 ==============
-* More 3D shapes
 * Graceful degradation for old browsers or mobile
 * Touch swipe support
 * Different sample navs
@@ -19,10 +19,15 @@ Roadmap
 
 Changelog
 ==============
+
+v0.3: August 30, 2013
+* Triangular, rectangular, pentagonal and hexagonal prisma shapes are now supported
+* Introduced following parameters: depth, images, imageDivClasses, degreesRotation
+
 v0.2: July 19, 2013
 * Fixed problem with rotations when the window is not visible
 * Added pause button feature
-* Support for triangular shape
+* Support for triangular prisma
 * Fixed issue with timer rotation not being cancelled when the user rotates manually
 
 v0.1: July 04, 2013

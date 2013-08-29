@@ -7,7 +7,7 @@
         "css3",
         "slider"
     ],
-    "version": "0.2.0",
+    "version": "0.3.0",
     "author": {
         "name": "Two Impulse",
         "url": "http://twoimpulse.com"
@@ -22,13 +22,13 @@
     "licenses": [
         {
             "type": "MIT",
-            "url": "https://github.com/jquery/jquery-color/blob/2.1.2/MIT-LICENSE.txt"
+            "url": "https://github.com/twoimpulse/impulse-slider/blob/master/LICENSE"
         }
     ],
     "bugs": "https://github.com/twoimpulse/impulse-slider/issues",
     "homepage": "https://github.com/twoimpulse/impulse-slider",
     "docs": "https://github.com/twoimpulse/impulse-slider",
-    "download": "https://github.com/twoimpulse/impulse-slider/archive/0.2.0.zip",
+    "download": "https://github.com/twoimpulse/impulse-slider/archive/0.3.0.zip",
     "dependencies": {
         "jquery": ">=1.8"
     }
