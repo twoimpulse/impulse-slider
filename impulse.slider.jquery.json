@@ -5,18 +5,19 @@
     "keywords": [
         "3d",
         "css3",
+        "jquery",
         "slider"
     ],
-    "version": "0.3.0",
+    "version": "0.4.0",
     "author": {
         "name": "Two Impulse",
-        "url": "http://twoimpulse.com"
+        "url": "http://www.twoimpulse.com"
     },
     "maintainers": [
         {
             "name": "Paulo Nunes",
             "email": "paulo@twoimpulse.com",
-            "url": "http://twoimpulse.com"
+            "url": "http://www.twoimpulse.com"
         }
     ],
     "licenses": [
@@ -28,7 +29,7 @@
     "bugs": "https://github.com/twoimpulse/impulse-slider/issues",
     "homepage": "https://github.com/twoimpulse/impulse-slider",
     "docs": "https://github.com/twoimpulse/impulse-slider",
-    "download": "https://github.com/twoimpulse/impulse-slider/archive/0.3.0.zip",
+    "download": "http://www.twoimpulse.com/?wpdmact=process&did=My5ob3RsaW5r",
     "dependencies": {
         "jquery": ">=1.8"
     }
