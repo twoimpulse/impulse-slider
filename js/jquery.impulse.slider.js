@@ -22,6 +22,7 @@ if (!window.console) {
 
 (function($) {
 
+    var eventPrefix = 'ImpulseSlider';
     var currentYRot = 0;
     var directionRight = true;
     var height;
@@ -75,6 +76,16 @@ if (!window.console) {
         var images = toStringArray(opts.images, defaults.images);
         var imageDivClasses = toStringArray(opts.imageDivClasses, defaults.imageDivClasses);
         degreesRotation = toNumber(opts.degreesRotation, defaults.degreesRotation);
+        var events = {
+            'ready'         : toFunction(opts.onReady, defaults.onReady),
+            'play'          : toFunction(opts.onPlay, defaults.onPlay),
+            'pause'         : toFunction(opts.onPause, defaults.onPause),
+            'rotateLeft'    : toFunction(opts.onRotateLeft, defaults.onRotateLeft),
+            'rotateRight'   : toFunction(opts.onRotateRight, defaults.onRotateRight),
+            'beforeRotate'  : toFunction(opts.onBeforeRotate, defaults.onBeforeRotate),
+            'rotate'        : toFunction(opts.onRotate, defaults.onRotate),
+            'resize'        : toFunction(opts.onResize, defaults.onResize)
+        };
 
         // check if there are images defined
         // if so create divs with images and add them to the spinnerSelector div
@@ -193,6 +204,13 @@ if (!window.console) {
 
         console.log("Initialized plugin.");
 
+        bindEvents(events);
+
+        triggerEvent('ready');
+
+        if ( autostart )
+            triggerEvent('play');
+
     };
 
         //Default options
@@ -213,7 +231,15 @@ if (!window.console) {
         spinnerSelector: "#cubeSpinner",
         images: [],
         imageDivClasses: [],
-        degreesRotation : 0
+        degreesRotation : 0,
+        onReady : null,
+        onPlay : null,
+        onPause : null,
+        onRotateLeft : null,
+        onRotateRight : null,
+        onRotate : null,
+        onResize : null,
+        onBeforeRotate: null
     };
 
     // API
@@ -235,12 +261,17 @@ if (!window.console) {
 
     $.fn.impulseslider.pause = function() {
         paused = true;
+        triggerEvent('pause')
+    };
+
+    $.fn.impulseslider.play = function() {
+        paused = false;
+        triggerEvent('play')
     };
 
     $.fn.impulseslider.resize = function(height, width, depth, perspective) {
-        resizeContainer(containerSelector, height, width, perspective);
-        resizePictures(height, width);
         buildPrisma(containerSelector, height, width, depth, perspective, divs);
+        triggerEvent('resize')
     };
 
 
@@ -286,6 +317,10 @@ if (!window.console) {
         return isNaN(numeric) ? (fallback || 0) : Number(numeric);
     };
 
+    function toFunction(func, fallback) {
+        return (typeof func == 'function') ? func : fallback;
+    };
+
     var toStringArray = function (array, fallback) {
         var res = new Array();
 
@@ -302,6 +337,22 @@ if (!window.console) {
             }
         }
         return res;
+    };
+
+    var triggerEvent = function (eventName, parameters) {
+        $(containerSelector).trigger(eventPrefix + ':' + eventName, parameters);
+    };
+
+    var bindEvent = function(eventName, handler) {
+        $(containerSelector).on(eventPrefix + ':' + eventName, handler);
+    };
+
+    var bindEvents = function(events) {
+        for(eventName in events) {
+            if ( events[eventName] ) {
+                bindEvent(eventName, events[eventName]);
+            }
+        }
     };
 
     var buildPrisma = function (containerSelector, height, width, depth, perspective, divs) {
@@ -356,6 +407,8 @@ if (!window.console) {
         transformY(selectorY, newRotY);
         currentYRot = newRotY;
         directionRight = true;
+        triggerEvent('rotate')
+        triggerEvent('rotateLeft')
     }
 
     var rotateLeft = function (selectorY, degreesRotation) {
@@ -363,6 +416,8 @@ if (!window.console) {
         transformY(selectorY, newRotY);
         currentYRot = newRotY;
         directionRight = false;
+        triggerEvent('rotate')
+        triggerEvent('rotateLeft')
     }
 
     var dateDiffGreaterThan = function (now, before, millisecs) {
