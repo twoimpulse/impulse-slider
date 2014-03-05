@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta content="charset=utf-8">
+	<title>ImpulseSlider Demo</title>
+	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+	<link rel="stylesheet" href="css/impulseslider.css" type="text/css" media="screen" />
+</head>
+<body>
+  
+<div id="cubeCarousel" class="sliderContainer">
+    <div id="cubeSpinner" class="slider">
+        <div class="face one">
+             <img class="img_slider active" src="img/black.jpg">
+        </div>
+        <div class="face two">
+            <img class="img_slider" src="img/blue.jpg">
+        </div>
+        <div class="face three">
+            <img class="img_slider" src="img/purple.jpg">
+        </div>
+        <div class="face four">
+            <img class="img_slider" src="img/red.jpg">
+        </div>
+    </div>
+</div>
+
+<div id="penthagonCarousel" class="sliderContainer">
+    <div id="penthagon" class="slider">
+        <div class="face one">
+            <img class="img_slider active" src="img/18410882_s.jpg">
+        </div>
+        <div class="face two">
+            <img class="img_slider" src="img/19022602_s.jpg">
+        </div>
+        <div class="face three">
+            <img class="img_slider" src="img/20151268_s.jpg">
+        </div>
+        <div class="face four">
+            <img class="img_slider" src="img/20151272_s.jpg">
+        </div>
+        <div class="face five">
+            <img class="img_slider" src="img/20461992_s.jpg">
+        </div>
+    </div>
+</div>
+
+<script src="../jquery-1.8.2.min.js"></script>
+<script src="../../js/jquery.impulse.slider.js"></script>
+<script type="text/javascript">
+    $(window).load(function(){
+
+        $('#cubeSpinner').impulseslider({
+            height: 200,
+            width: 200,
+            depth:100,
+            pauseTime: 2000,
+            perspective:800
+        });
+
+        $('#penthagon').impulseslider({
+            height: 100,
+            width: 150,
+            depth: 102,
+            perspective: 500,
+            pauseTime: 1500,
+            directionRight: false,
+            containerSelector: "#penthagonCarousel",
+            spinnerSelector: "#penthagon"
+        });
+
+    });
+  </script>
+  
+</body>
+</html>

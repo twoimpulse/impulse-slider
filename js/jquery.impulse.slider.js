@@ -23,19 +23,7 @@ if (!window.console) {
 (function($) {
 
     var eventPrefix = 'ImpulseSlider';
-    var currentYRot = 0;
-    var directionRight = true;
-    var height;
-    var width;
-    var paused = false;
     var isActive = true;
-    var lastRotated = new Date();
-    var pauseTime;
-    var spinnerSelector;
-    var containerSelector;
-    var degreesRotation;
-    var pics = new Array();
-    var divs = new Array();
 
     window.onfocus = function () {
         isActive = true;
@@ -47,173 +35,36 @@ if (!window.console) {
         console.log("Focus lost.");
     };
 
-
     //TODO
-    // Swipe
     // Loading images lazily
-
-
 
     // Plugin definition.
     $.fn.impulseslider = function(options) {
-        var defaults =  $.fn.impulseslider.defaults;
-        var opts = $.extend({},defaults , options);
-        var depth = toNumber(opts.depth, defaults.depth);
-        var perspective = toNumber(opts.perspective, defaults.perspective);
-        var rightSelector = getString(opts.rightSelector, defaults.rightSelector);
-        var leftSelector = getString(opts.leftSelector, defaults.leftSelector);
-        var pauseSelector = getString(opts.pauseSelector, defaults.pauseSelector);
-        directionRight = getBoolean(opts.directionRight, defaults.directionRight);
-        height = toNumber(opts.height, defaults.height);
-        width = toNumber(opts.width, defaults.width);
-        spinnerSelector = getString(opts.spinnerSelector, defaults.spinnerSelector);
-        containerSelector = getString(opts.containerSelector, defaults.containerSelector);
-        var autostart = getBoolean(opts.autostart, defaults.autostart);
-        paused = !autostart;
-        pauseTime = toNumber(opts.pauseTime, defaults.pauseTime);
-        var transitionDuration = toNumber(opts.transitionDuration, defaults.transitionDuration);
-        var transitionEffect = getString(opts.transitionEffect, defaults.transitionEffect);
-        var images = toStringArray(opts.images, defaults.images);
-        var imageDivClasses = toStringArray(opts.imageDivClasses, defaults.imageDivClasses);
-        degreesRotation = toNumber(opts.degreesRotation, defaults.degreesRotation);
-        var events = {
-            'ready'         : toFunction(opts.onReady, defaults.onReady),
-            'play'          : toFunction(opts.onPlay, defaults.onPlay),
-            'pause'         : toFunction(opts.onPause, defaults.onPause),
-            'rotateLeft'    : toFunction(opts.onRotateLeft, defaults.onRotateLeft),
-            'rotateRight'   : toFunction(opts.onRotateRight, defaults.onRotateRight),
-            'beforeRotate'  : toFunction(opts.onBeforeRotate, defaults.onBeforeRotate),
-            'rotate'        : toFunction(opts.onRotate, defaults.onRotate),
-            'resize'        : toFunction(opts.onResize, defaults.onResize)
-        };
+        var args = arguments;
+        return this.each(function(k, element) {
+            var $elem = $(element),
+                slider = $elem.data('impulse-slider');
+            if (slider && args[0] && typeof args[0] == 'string') {
+                var method = args[0],
+                    params = [];
 
-        // check if there are images defined
-        // if so create divs with images and add them to the spinnerSelector div
-        if (images.length != 0) {
-            for (var i = 0; i < images.length; i++) {
-                var image = images[i];
+                if ( ! slider ) return;
 
-                var classesString = "";
-                for (var j = 0; j < imageDivClasses.length; j++) {
-                    classesString += imageDivClasses[j] + " ";
-                }
+                for (var i in args)
+                    if (i > 0)
+                        params.push(args[i]);
 
-                var classProperty = "";
-                if (classesString.length > 0)
-                    classProperty = "class='" + classesString + "'";
+                if (slider[method])
+                    slider[method].apply(slider, params);
 
-                var pic = $("<img src='" + image + "'>");
-                var div = $("<div " + classProperty + "></div>");
-                div.append(pic);
-                pics[i] = pic;
-                divs[i] = div;
+            } else {
+                $elem.data('impulse-slider', new ImpulseSlider(options));
             }
 
-            // add divs to the spinner
-            var spinnerDiv = $(spinnerSelector);
-            for (var i = 0; i < divs.length; i++) {
-                spinnerDiv.append(divs[i]);
-            }
-
-            // images are defined already inside the slider
-        } else {
-            var list = $(spinnerSelector);
-            divs = $("div", list);
-
-            pics = $(spinnerSelector).find('img');
-             for (var i = 0; i < pics.length; i++) {
-                  pics[i] = $(pics[i]);
-             }
-        }
-
-        if (degreesRotation == 0)
-            degreesRotation = 360 / divs.length;
-
-        // build shape
-        buildPrisma(containerSelector, height, width, depth, perspective, divs);
-
-
-        // apply listener to navigation arrows
-        $(rightSelector).click(function() {
-            rotateRight(spinnerSelector, degreesRotation);
-            console.log("Manually rotated %n degrees to the right", degreesRotation);
-            paused = false;
         });
-
-        $(leftSelector).click(function() {
-            rotateLeft(spinnerSelector, degreesRotation);
-            console.log("Manually rotated %n degrees to the left", degreesRotation);
-            paused = false;
-        });
-
-        $(pauseSelector).click(function() {
-            paused = true;
-        });
-
-        // apply swipe stuff
-        $(containerSelector).on('swipeleft', function(e) {
-             rotateLeft(spinnerSelector, degreesRotation);
-        });
-
-        $(containerSelector).on('swiperight', function(e) {
-            rotateRight(spinnerSelector, degreesRotation);
-        });
-
-
-        // time between transitions
-        if (autostart) {
-
-            var infiniteLoop = setInterval(function() {
-                if (!paused) {
-                    if (isActive) {
-                        var now = new Date();
-                        var rotatedLongAgo = dateDiffGreaterThan(now, lastRotated, pauseTime / 2);
-                        if (rotatedLongAgo) {
-                            rotate(spinnerSelector, degreesRotation);
-                            console.log("Auto rotated %n degrees", degreesRotation);
-                        } else {
-                            console.log("Cancelled auto rotate - last rotation: %s millisecs ago", now - lastRotated);
-                        }
-                    } else {
-                        console.log("Cancelled auto rotate. No focus.");
-                    }
-                } else {
-                    console.log("Cancelled auto rotate. Paused.");
-                }
-            }, pauseTime);
-        }
-
-        // transition speed in seconds
-        var secs = transitionDuration / 1000.0;
-
-
-        // add 3D styles to spinner
-        $(spinnerSelector).css("-webkit-transform-style", "preserve-3d");
-        $(spinnerSelector).css("-moz-transform-style", "preserve-3d");
-        $(spinnerSelector).css("-o-transform-style", "preserve-3d");
-        $(spinnerSelector).css("transform-style", "preserve-3d");
-
-
-        // TODO split the transition CSS3 properties to avoid this string concatenation
-        var style = "all " + secs + "s " + transitionEffect;
-        $(spinnerSelector).css("-webkit-transition", style);
-        $(spinnerSelector).css("-moz-transition", style);
-        $(spinnerSelector).css("-o-transition", style);
-        $(spinnerSelector).css("transition", style);
-
-
-        console.log("Initialized plugin.");
-
-        bindEvents(events);
-
-        triggerEvent('ready');
-
-        if ( autostart )
-            triggerEvent('play');
-
     };
 
-        //Default options
+    //Default options
     $.fn.impulseslider.defaults = {
         height: 400,
         width: 400,
@@ -242,189 +93,366 @@ if (!window.console) {
         onBeforeRotate: null
     };
 
-    // API
-    $.fn.impulseslider.rotateRight = function() {
-        var now = new Date();
-        var rotatedLongAgo = dateDiffGreaterThan(now, lastRotated, pauseTime / 2);
-        if (rotatedLongAgo) {
-            rotateRight(spinnerSelector, degreesRotation);
-        }
-    };
+    function ImpulseSlider(options) {
 
-    $.fn.impulseslider.rotateLeft = function() {
-        var now = new Date();
-        var rotatedLongAgo = dateDiffGreaterThan(now, lastRotated, pauseTime / 2);
-        if (rotatedLongAgo) {
-            rotateLeft(spinnerSelector, degreesRotation);
-        }
-    };
+        // state persistent properties
+        var currentYRot         = 0;
+        var directionRight      = true;
+        var height              = null;
+        var width               = null;
+        var paused              = false;
+        var lastRotated         = new Date();
+        var pauseTime           = null;
+        var spinnerSelector     = null;
+        var containerSelector   = null;
+        var degreesRotation     = null;
+        var pics                = [];
+        var divs                = [];
 
-    $.fn.impulseslider.pause = function() {
-        paused = true;
-        triggerEvent('pause')
-    };
+        initialize(options);
 
-    $.fn.impulseslider.play = function() {
-        paused = false;
-        triggerEvent('play')
-    };
+        // Public API
+        return {
+            rotateRight : function() {
+                var now = new Date();
+                var rotatedLongAgo = dateDiffGreaterThan(now, lastRotated, pauseTime / 2);
+                if (rotatedLongAgo) {
+                    rotateRight(spinnerSelector, degreesRotation);
+                }
+            },
 
-    $.fn.impulseslider.resize = function(height, width, depth, perspective) {
-        buildPrisma(containerSelector, height, width, depth, perspective, divs);
-        triggerEvent('resize')
-    };
+            rotateLeft : function() {
+                var now = new Date();
+                var rotatedLongAgo = dateDiffGreaterThan(now, lastRotated, pauseTime / 2);
+                if (rotatedLongAgo) {
+                    rotateLeft(spinnerSelector, degreesRotation);
+                }
+            },
 
+            pause : function() {
+                if (paused) return;
+                paused = true;
+                triggerEvent('pause')
+            },
 
+            play : function() {
+                if (!paused) return;
+                paused = false;
+                triggerEvent('play')
+            },
 
+            resize : function(height, width, depth, perspective) {
+                buildPrisma(containerSelector, height, width, depth, perspective, divs);
+                triggerEvent('resize')
+            }
+        };
 
+        // Private functions
 
-    // resize stuff
-    var resizeContainer = function (selector, height, width, perspective) {
-        $(selector).css("-webkit-perspective", perspective);
-        $(selector).css("-moz-perspective", perspective + "px");
-        $(selector).css("-o-perspective", perspective);
-        $(selector).css("perspective", perspective + "px");
+        // Plugin initialization.
+        function initialize(options) {
+            var defaults =  $.fn.impulseslider.defaults;
+            var opts = $.extend({},defaults , options);
+            var depth = toNumber(opts.depth, defaults.depth);
+            var perspective = toNumber(opts.perspective, defaults.perspective);
+            var rightSelector = getString(opts.rightSelector, defaults.rightSelector);
+            var leftSelector = getString(opts.leftSelector, defaults.leftSelector);
+            var pauseSelector = getString(opts.pauseSelector, defaults.pauseSelector);
+            directionRight = getBoolean(opts.directionRight, defaults.directionRight);
+            height = toNumber(opts.height, defaults.height);
+            width = toNumber(opts.width, defaults.width);
+            spinnerSelector = getString(opts.spinnerSelector, defaults.spinnerSelector);
+            containerSelector = getString(opts.containerSelector, defaults.containerSelector);
+            var autostart = getBoolean(opts.autostart, defaults.autostart);
+            paused = !autostart;
+            pauseTime = toNumber(opts.pauseTime, defaults.pauseTime);
+            var transitionDuration = toNumber(opts.transitionDuration, defaults.transitionDuration);
+            var transitionEffect = getString(opts.transitionEffect, defaults.transitionEffect);
+            var images = toStringArray(opts.images, defaults.images);
+            var imageDivClasses = toStringArray(opts.imageDivClasses, defaults.imageDivClasses);
+            degreesRotation = toNumber(opts.degreesRotation, defaults.degreesRotation);
+            var events = {
+                'ready'         : toFunction(opts.onReady, defaults.onReady),
+                'play'          : toFunction(opts.onPlay, defaults.onPlay),
+                'pause'         : toFunction(opts.onPause, defaults.onPause),
+                'rotateLeft'    : toFunction(opts.onRotateLeft, defaults.onRotateLeft),
+                'rotateRight'   : toFunction(opts.onRotateRight, defaults.onRotateRight),
+                'beforeRotate'  : toFunction(opts.onBeforeRotate, defaults.onBeforeRotate),
+                'rotate'        : toFunction(opts.onRotate, defaults.onRotate),
+                'resize'        : toFunction(opts.onResize, defaults.onResize)
+            }
 
-        $(selector).css("width", width + "px");
-        $(selector).css("height", height + "px");
+            // check if there are images defined
+            // if so create divs with images and add them to the spinnerSelector div
+            if (images.length != 0) {
+                for (var i = 0; i < images.length; i++) {
+                    var image = images[i];
 
-    }
+                    var classesString = "";
+                    for (var j = 0; j < imageDivClasses.length; j++) {
+                        classesString += imageDivClasses[j] + " ";
+                    }
 
-    var resizePictures = function (height, width) {
-         for (var i = 0; i < pics.length; i++) {
-            var pic = pics[i];
-            pic.css("width", width + "px");
-            pic.css("height", height + "px");
-         }
-    }
+                    var classProperty = "";
+                    if (classesString.length > 0)
+                        classProperty = "class='" + classesString + "'";
 
+                    var pic = $("<img src='" + image + "'>");
+                    var div = $("<div " + classProperty + "></div>");
+                    div.append(pic);
+                    pics[i] = pic;
+                    divs[i] = div;
+                }
 
-    // `translate` builds a translate transform string for given data.
-    var translate = function (t) {
-        return " translate3d(" + t.x + "px," + t.y + "px," + t.z + "px) ";
-    };
+                // add divs to the spinner
+                var spinnerDiv = $(spinnerSelector);
+                for (var i = 0; i < divs.length; i++) {
+                    spinnerDiv.append(divs[i]);
+                }
 
+                // images are defined already inside the slider
+            } else {
+                var list = $(spinnerSelector);
+                divs = $("div", list);
 
-    var getString = function(value, fallback) {
-        return (typeof value === 'undefined') ? fallback : value;
-    }
-
-    var getBoolean = function (value, fallback) {
-        return (typeof value === 'undefined') ? fallback : value;
-    }
-
-    var toNumber = function (numeric, fallback) {
-        return isNaN(numeric) ? (fallback || 0) : Number(numeric);
-    };
-
-    function toFunction(func, fallback) {
-        return (typeof func == 'function') ? func : fallback;
-    };
-
-    var toStringArray = function (array, fallback) {
-        var res = new Array();
-
-        if (! $.isArray(array))
-            return fallback;
-        else {
-            for (var i = 0; i < array.length; i++) {
-                var value = array[i];
-                if (typeof value === 'undefined') {
-                    return fallback;
-                } else {
-                    res[i] = value;
+                pics = $(spinnerSelector).find('img');
+                for (var i = 0; i < pics.length; i++) {
+                    pics[i] = $(pics[i]);
                 }
             }
+
+            if (degreesRotation == 0)
+                degreesRotation = 360 / divs.length;
+
+            // build shape
+            buildPrisma(containerSelector, height, width, depth, perspective, divs);
+
+
+            // apply listener to navigation arrows
+            $(rightSelector).click(function() {
+                rotateRight(spinnerSelector, degreesRotation);
+                console.log("Manually rotated %n degrees to the right", degreesRotation);
+                paused = false;
+            });
+
+            $(leftSelector).click(function() {
+                rotateLeft(spinnerSelector, degreesRotation);
+                console.log("Manually rotated %n degrees to the left", degreesRotation);
+                paused = false;
+            });
+
+            $(pauseSelector).click(function() {
+                paused = true;
+            });
+
+            // apply swipe stuff
+            $(containerSelector).on('swipeleft', function(e) {
+                rotateLeft(spinnerSelector, degreesRotation);
+            });
+
+            $(containerSelector).on('swiperight', function(e) {
+                rotateRight(spinnerSelector, degreesRotation);
+            });
+
+            // time between transitions
+            if (autostart) {
+
+                var infiniteLoop = setInterval(function() {
+                    if (!paused) {
+                        if (isActive) {
+                            var now = new Date();
+                            var rotatedLongAgo = dateDiffGreaterThan(now, lastRotated, pauseTime / 2);
+                            if (rotatedLongAgo) {
+                                rotate(spinnerSelector, degreesRotation);
+                                console.log("Auto rotated %n degrees", degreesRotation);
+                            } else {
+                                console.log("Cancelled auto rotate - last rotation: %s millisecs ago", now - lastRotated);
+                            }
+                        } else {
+                            console.log("Cancelled auto rotate. No focus.");
+                        }
+                    } else {
+                        console.log("Cancelled auto rotate. Paused.");
+                    }
+                }, pauseTime);
+            }
+
+            // transition speed in seconds
+            var secs = transitionDuration / 1000.0;
+
+
+            // add 3D styles to spinner
+            $(spinnerSelector).css("-webkit-transform-style", "preserve-3d");
+            $(spinnerSelector).css("-moz-transform-style", "preserve-3d");
+            $(spinnerSelector).css("-o-transform-style", "preserve-3d");
+            $(spinnerSelector).css("transform-style", "preserve-3d");
+
+
+            // TODO split the transition CSS3 properties to avoid this string concatenation
+            var style = "all " + secs + "s " + transitionEffect;
+            $(spinnerSelector).css("-webkit-transition", style);
+            $(spinnerSelector).css("-moz-transition", style);
+            $(spinnerSelector).css("-o-transition", style);
+            $(spinnerSelector).css("transition", style);
+
+
+            console.log("Initialized plugin.");
+
+            bindEvents(events);
+
+            triggerEvent('ready');
+
+            if ( autostart )
+                triggerEvent('play');
+
+        };
+
+        // resize stuff
+        function resizeContainer(selector, height, width, perspective) {
+            $(selector).css("-webkit-perspective", perspective);
+            $(selector).css("-moz-perspective", perspective + "px");
+            $(selector).css("-o-perspective", perspective);
+            $(selector).css("perspective", perspective + "px");
+
+            $(selector).css("width", width + "px");
+            $(selector).css("height", height + "px");
+
         }
-        return res;
-    };
 
-    var triggerEvent = function (eventName, parameters) {
-        $(containerSelector).trigger(eventPrefix + ':' + eventName, parameters);
-    };
-
-    var bindEvent = function(eventName, handler) {
-        $(containerSelector).on(eventPrefix + ':' + eventName, handler);
-    };
-
-    var bindEvents = function(events) {
-        for(eventName in events) {
-            if ( events[eventName] ) {
-                bindEvent(eventName, events[eventName]);
+        function resizePictures(height, width) {
+            for (var i = 0; i < pics.length; i++) {
+                var pic = pics[i];
+                pic.css("width", width + "px");
+                pic.css("height", height + "px");
             }
         }
-    };
 
-    var buildPrisma = function (containerSelector, height, width, depth, perspective, divs) {
-        var degrees = 360 / divs.length;
-        var rotation = 0;
-        var currentRot = 0;
-        $.each(divs, function(i, div) {
-            rotation = currentRot;
-            transformObjY(rotation, $(div), depth);
-            currentRot += degrees;
-        });
+        // `translate` builds a translate transform string for given data.
+        function translate(t) {
+            return " translate3d(" + t.x + "px," + t.y + "px," + t.z + "px) ";
+        }
 
-        resizeContainer(containerSelector, height, width, perspective);
-        resizePictures(height, width);
+        function getString(value, fallback) {
+            return (typeof value === 'undefined') ? fallback : value;
+        }
+
+        function getBoolean(value, fallback) {
+            return (typeof value === 'undefined') ? fallback : value;
+        }
+
+        function toNumber(numeric, fallback) {
+            return isNaN(numeric) ? (fallback || 0) : Number(numeric);
+        }
+
+        function toFunction(func, fallback) {
+            return (typeof func == 'function') ? func : fallback;
+        }
+
+        function toStringArray(array, fallback) {
+            var res = new Array();
+
+            if (! $.isArray(array))
+                return fallback;
+            else {
+                for (var i = 0; i < array.length; i++) {
+                    var value = array[i];
+                    if (typeof value === 'undefined') {
+                        return fallback;
+                    } else {
+                        res[i] = value;
+                    }
+                }
+            }
+            return res;
+        }
+
+        function triggerEvent(eventName, parameters) {
+            $(containerSelector).trigger(eventPrefix + ':' + eventName, parameters);
+        };
+
+        function bindEvent(eventName, handler) {
+            $(containerSelector).on(eventPrefix + ':' + eventName, handler);
+        };
+
+        function bindEvents(events) {
+            for(eventName in events) {
+                if ( events[eventName] ) {
+                    bindEvent(eventName, events[eventName]);
+                }
+            }
+        };
+
+        function buildPrisma(containerSelector, height, width, depth, perspective, divs) {
+            var degrees = 360 / divs.length;
+            var rotation = 0;
+            var currentRot = 0;
+            $.each(divs, function(i, div) {
+                rotation = currentRot;
+                transformObjY(rotation, $(div), depth);
+                currentRot += degrees;
+            });
+
+            resizeContainer(containerSelector, height, width, perspective);
+            resizePictures(height, width);
+        }
+
+
+        function transformObj(axis, deg, obj, depth) {
+            var rotation = "rotate" + axis + "(" + deg + "deg) " + 'translateZ(' + depth + 'px)';
+            obj.css("transform", rotation);
+            obj.css("-ms-transform", rotation);
+            obj.css("-webkit-transform", rotation);
+
+        }
+
+        function transformObjY(deg, selectorY, depth) {
+            transformObj("Y", deg, $(selectorY), depth);
+        }
+
+        function transform(axis, deg, selector) {
+            var rotation = "rotate" + axis + "(" + deg + "deg)";
+            $(selector).css("transform", rotation);
+            $(selector).css("-ms-transform", rotation);
+            $(selector).css("-webkit-transform", rotation);
+
+        }
+
+        function rotate(selector, degreesRotation) {
+            if (directionRight)
+                rotateRight(selector, degreesRotation);
+            else
+                rotateLeft(selector, degreesRotation);
+        }
+
+        function transformY(selectorY, deg) {
+            transform("Y", deg, selectorY);
+            lastRotated = new Date();
+        }
+
+        function rotateRight(selectorY, degreesRotation) {
+            var newRotY = currentYRot + degreesRotation;
+            transformY(selectorY, newRotY);
+            currentYRot = newRotY;
+            directionRight = true;
+            triggerEvent('rotate')
+            triggerEvent('rotateLeft')
+        }
+
+        function rotateLeft(selectorY, degreesRotation) {
+            var newRotY = currentYRot - degreesRotation;
+            transformY(selectorY, newRotY);
+            currentYRot = newRotY;
+            directionRight = false;
+            triggerEvent('rotate')
+            triggerEvent('rotateLeft')
+        }
+
+        function dateDiffGreaterThan(now, before, millisecs) {
+            var diff = now - before;
+            return diff > millisecs;
+        }
+
     }
-
-
-    var transformObj = function (axis, deg, obj, depth) {
-        var rotation = "rotate" + axis + "(" + deg + "deg) " + 'translateZ(' + depth + 'px)';
-        obj.css("transform", rotation);
-        obj.css("-ms-transform", rotation);
-        obj.css("-webkit-transform", rotation);
-
-    }
-
-    var transformObjY = function (deg, selectorY, depth) {
-        transformObj("Y", deg, $(selectorY), depth);
-    }
-
-    var transform = function  (axis, deg, selector) {
-        var rotation = "rotate" + axis + "(" + deg + "deg)";
-        $(selector).css("transform", rotation);
-        $(selector).css("-ms-transform", rotation);
-        $(selector).css("-webkit-transform", rotation);
-
-    }
-
-    var rotate = function (selector, degreesRotation) {
-        if (directionRight)
-            rotateRight(selector, degreesRotation);
-        else
-            rotateLeft(selector, degreesRotation);
-    }
-
-    var transformY = function (selectorY, deg) {
-        transform("Y", deg, selectorY);
-        lastRotated = new Date();
-    }
-
-    var rotateRight = function (selectorY, degreesRotation) {
-        var newRotY = currentYRot + degreesRotation;
-        transformY(selectorY, newRotY);
-        currentYRot = newRotY;
-        directionRight = true;
-        triggerEvent('rotate')
-        triggerEvent('rotateLeft')
-    }
-
-    var rotateLeft = function (selectorY, degreesRotation) {
-        var newRotY = currentYRot - degreesRotation;
-        transformY(selectorY, newRotY);
-        currentYRot = newRotY;
-        directionRight = false;
-        triggerEvent('rotate')
-        triggerEvent('rotateLeft')
-    }
-
-    var dateDiffGreaterThan = function (now, before, millisecs) {
-        var diff = now - before;
-        return diff > millisecs;
-    }
-
 
 })(jQuery);
 

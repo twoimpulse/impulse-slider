@@ -1,0 +1,18 @@
+.sliderContainer {
+    margin-left:auto;
+    margin-right:auto;
+    margin-top: 50px;
+}
+
+.slider {
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    -o-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+
+}
+
+.slider .face {
+    position: absolute;
+    padding: 0px;
+}
