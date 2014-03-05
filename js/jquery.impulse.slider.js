@@ -58,7 +58,7 @@ if (!window.console) {
                     slider[method].apply(slider, params);
 
             } else {
-                $elem.data('impulse-slider', new ImpulseSlider(options));
+                $elem.data('impulse-slider', new ImpulseSlider($elem, options));
             }
 
         });
@@ -83,6 +83,7 @@ if (!window.console) {
         images: [],
         imageDivClasses: [],
         degreesRotation : 0,
+        enableKeyboard : true,
         onReady : null,
         onPlay : null,
         onPause : null,
@@ -93,7 +94,7 @@ if (!window.console) {
         onBeforeRotate: null
     };
 
-    function ImpulseSlider(options) {
+    function ImpulseSlider(element, options) {
 
         // state persistent properties
         var currentYRot         = 0;
@@ -111,8 +112,8 @@ if (!window.console) {
 
         initialize(options);
 
-        // Public API
-        return {
+        // API
+        var api = {
             rotateRight : function() {
                 var now = new Date();
                 var rotatedLongAgo = dateDiffGreaterThan(now, lastRotated, pauseTime / 2);
@@ -147,6 +148,8 @@ if (!window.console) {
             }
         };
 
+        return api;
+
         // Private functions
 
         // Plugin initialization.
@@ -170,6 +173,7 @@ if (!window.console) {
             var transitionEffect = getString(opts.transitionEffect, defaults.transitionEffect);
             var images = toStringArray(opts.images, defaults.images);
             var imageDivClasses = toStringArray(opts.imageDivClasses, defaults.imageDivClasses);
+            var enableKeyboard = getBoolean(opts.enableKeyboard, defaults.enableKeyboard);
             degreesRotation = toNumber(opts.degreesRotation, defaults.degreesRotation);
             var events = {
                 'ready'         : toFunction(opts.onReady, defaults.onReady),
@@ -227,32 +231,8 @@ if (!window.console) {
             // build shape
             buildPrisma(containerSelector, height, width, depth, perspective, divs);
 
-
-            // apply listener to navigation arrows
-            $(rightSelector).click(function() {
-                rotateRight(spinnerSelector, degreesRotation);
-                console.log("Manually rotated %n degrees to the right", degreesRotation);
-                paused = false;
-            });
-
-            $(leftSelector).click(function() {
-                rotateLeft(spinnerSelector, degreesRotation);
-                console.log("Manually rotated %n degrees to the left", degreesRotation);
-                paused = false;
-            });
-
-            $(pauseSelector).click(function() {
-                paused = true;
-            });
-
-            // apply swipe stuff
-            $(containerSelector).on('swipeleft', function(e) {
-                rotateLeft(spinnerSelector, degreesRotation);
-            });
-
-            $(containerSelector).on('swiperight', function(e) {
-                rotateRight(spinnerSelector, degreesRotation);
-            });
+            // set navigation controls
+            setupNavigationControls(enableKeyboard, rightSelector, leftSelector, pauseSelector);
 
             // time between transitions
             if (autostart) {
@@ -306,6 +286,54 @@ if (!window.console) {
                 triggerEvent('play');
 
         };
+
+        function setupNavigationControls(enableKeyboard, rightSelector, leftSelector, pauseSelector) {
+            // apply listener to navigation arrows
+            $(rightSelector).click(function() {
+                rotateRight(spinnerSelector, degreesRotation);
+                console.log("Manually rotated %n degrees to the right", degreesRotation);
+                paused = false;
+            });
+
+            $(leftSelector).click(function() {
+                rotateLeft(spinnerSelector, degreesRotation);
+                console.log("Manually rotated %n degrees to the left", degreesRotation);
+                paused = false;
+            });
+
+            $(pauseSelector).click(function() {
+                paused = true;
+            });
+
+            // apply swipe stuff
+            $(containerSelector).on('swipeleft', function(e) {
+                rotateLeft(spinnerSelector, degreesRotation);
+            });
+
+            $(containerSelector).on('swiperight', function(e) {
+                rotateRight(spinnerSelector, degreesRotation);
+            });
+
+            if (enableKeyboard) {
+                $(document).keydown(function(e) {
+                    console.log(e.keyCode);
+                    switch (e.keyCode) {
+                        case 37:
+                            api.rotateLeft();
+                            break;
+                        case 39:
+                            api.rotateRight();
+                            break;
+                        case 80:
+                            if (!paused)
+                                api.pause();
+                            else
+                                api.play();
+                            break;
+                    }
+                });
+            }
+        }
 
         // resize stuff
         function resizeContainer(selector, height, width, perspective) {
