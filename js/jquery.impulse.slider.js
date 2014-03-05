@@ -68,7 +68,8 @@ if (!window.console) {
     $.fn.impulseslider.defaults = {
         height: 400,
         width: 400,
-        depth: 200,
+        depth: false,
+        spacing: 0,
         perspective: 800,
         pauseTime: 3000,
         transitionDuration: 1000,
@@ -156,7 +157,8 @@ if (!window.console) {
         function initialize(options) {
             var defaults =  $.fn.impulseslider.defaults;
             var opts = $.extend({},defaults , options);
-            var depth = toNumber(opts.depth, defaults.depth);
+            var depth;
+            var spacing = toNumber(opts.spacing, defaults.spacing);
             var perspective = toNumber(opts.perspective, defaults.perspective);
             var rightSelector = getString(opts.rightSelector, defaults.rightSelector);
             var leftSelector = getString(opts.leftSelector, defaults.leftSelector);
@@ -224,6 +226,12 @@ if (!window.console) {
                     pics[i] = $(pics[i]);
                 }
             }
+
+            // calculate the minimum depth if no depth was provided (default behavior)
+            if (isNaN(depth))
+                depth = calculateMinimumDepth(divs.size(), width);
+
+            depth += spacing;
 
             if (degreesRotation == 0)
                 degreesRotation = 360 / divs.length;
@@ -316,7 +324,6 @@ if (!window.console) {
 
             if (enableKeyboard) {
                 $(document).keydown(function(e) {
-                    console.log(e.keyCode);
                     switch (e.keyCode) {
                         case 37:
                             api.rotateLeft();
@@ -478,6 +485,12 @@ if (!window.console) {
         function dateDiffGreaterThan(now, before, millisecs) {
             var diff = now - before;
             return diff > millisecs;
+        }
+
+        function calculateMinimumDepth(faceCount, width) {
+            var angle = 2 * Math.PI / faceCount;
+            var factor = width / Math.sqrt( 2 - 2 * Math.cos( angle ) );
+            return factor * Math.sqrt( ( 1 + Math.cos( angle ) ) / 2 );
         }
 
     }
