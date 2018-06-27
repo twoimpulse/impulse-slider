@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta content="charset=utf-8">
+    <title>ImpulseSlider Demo</title>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+    <link rel="stylesheet" href="css/impulseslider.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="css/toast.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" media="screen"/>
+    <link href='http://fonts.googleapis.com/css?family=Rationale' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div class="container">
+    <div class="grid">
+
+        <div class="unit one-of-three">
+            <div class="nav">
+                <h3>Navigation</h3>
+                <br>
+                <i class="leftBtn arrow icon-arrow-left icon-4x"></i>
+                <i class="pauseBtn arrow icon-pause icon-4x"></i>
+                <i class="playBtn arrow icon-play icon-4x"></i>
+                <i class="rightBtn arrow icon-arrow-right icon-4x"></i>
+            </div>
+            <div class="options">
+                <h3>Options</h3>
+
+                <p>Click on the options below to change the slider settings</p>
+                <table>
+                    <tr>
+                        <td> Width:</td>
+                        <td><input id="width" type="number" disabled></td>
+                        <td><i class="leftWidth arrow icon-arrow-left"></i>
+                            <i class="rightWidth arrow icon-arrow-right"></i></td>
+
+                    </tr>
+                    <tr>
+                        <td>Height:</td>
+                        <td><input id="height" type="number" disabled></td>
+                        <td><i class="leftHeight arrow icon-arrow-left"></i>
+                            <i class="rightHeight arrow icon-arrow-right"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Depth:</td>
+                        <td><input id="depth" type="number" disabled></td>
+                        <td><i class="leftDepth arrow icon-arrow-left"></i>
+                            <i class="rightDepth arrow icon-arrow-right"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Perspective:</td>
+                        <td><input id="perspective" type="number" disabled></td>
+                        <td><i class="leftPerspective arrow icon-arrow-left"></i> <i
+                                class="rightPerspective arrow icon-arrow-right"></i></td>
+                    </tr>
+                </table>
+
+            </div>
+
+
+        </div>
+        <div class="unit two-of-three">
+            <div id="slider-container">
+                <div id="slider">
+                </div>
+            </div>
+
+            <div id="log-container">
+                <h3>Log</h3>
+                <ul></ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script src="../jquery-1.8.2.min.js"></script>
+<script src="js/jquery.event.move.js"></script>
+<script src="js/jquery.event.swipe.js"></script>
+<script src="../../js/jquery.impulse.slider.js"></script>
+<script type="text/javascript">
+    $(window).load(function() {
+        var height = 150;
+        var width = 400;
+        var depth = 200;
+        var perspective = 1000;
+
+        var slider = $('#slider');
+        var heightInput = $("#height");
+        var widthInput = $("#width");
+        var depthInput = $("#depth");
+        var perspectiveInput = $("#perspective");
+
+
+        slider.impulseslider({
+            height:height,
+            width: width,
+            depth:depth,
+            perspective:perspective,
+            pauseTime: 2000,
+            transitionDuration: 1000,
+            transitionEffect: "ease-in-out",
+            autostart: true,
+            rightSelector: ".right",
+            leftSelector: ".left",
+            pauseSelector: ".pause",
+            playSelector: ".play",
+            directionRight: true,
+            containerSelector: "#slider-container",
+            spinnerSelector: "#slider",
+            images: ["img/10244904_s.jpg","img/11915561_s.jpg","img/21970006_s.jpg","img/8753442_s.jpg"],
+            imageDivClasses: ["face"],
+            onReady: function() {
+                logEvent('ready');
+            },
+            onRotate: function() {
+                logEvent('rotate');
+            },
+            onRotateRight: function() {
+                logEvent('rotateLeft');
+            },
+            onRotateLeft: function() {
+                logEvent('rotateRight');
+            },
+            onPause: function() {
+                logEvent('pause');
+            },
+            onPlay: function() {
+                logEvent('play');
+            },
+            onResize: function() {
+                logEvent('resize');
+            }
+        });
+
+        // set the settings from the plugin in the input
+        heightInput.val(height);
+        widthInput.val(width);
+        depthInput.val(depth);
+        perspectiveInput.val(perspective);
+
+
+        // hook the buttons
+        $(".leftBtn").click(function() {
+            slider.impulseslider.rotateLeft();
+        });
+
+        $(".rightBtn").click(function() {
+            slider.impulseslider.rotateRight();
+        });
+
+        $(".pauseBtn").click(function() {
+            slider.impulseslider.pause();
+            $(this).hide();
+            $(".playBtn").show();
+        });
+
+        $(".playBtn").click(function() {
+            slider.impulseslider.play();
+            $(this).hide();
+            $(".pauseBtn").show();
+        });
+
+        $(".leftWidth").click(function() {
+            widthInput.val(width - 25);
+            width = Number(widthInput.val());
+            slider.impulseslider.resize(height, width, depth, perspective);
+        });
+
+        $(".rightWidth").click(function() {
+            widthInput.val(width + 25);
+            width = Number(widthInput.val());
+            slider.impulseslider.resize(height, width, depth, perspective);
+        });
+
+        $(".leftHeight").click(function() {
+            heightInput.val(height - 25);
+            height = Number(heightInput.val());
+            slider.impulseslider.resize(height, width, depth, perspective);
+        });
+
+        $(".rightHeight").click(function() {
+            heightInput.val(height + 25);
+            height = Number(heightInput.val());
+            slider.impulseslider.resize(height, width, depth, perspective);
+        });
+
+        $(".leftDepth").click(function() {
+            depthInput.val(depth - 25);
+            depth = Number(depthInput.val());
+            slider.impulseslider.resize(height, width, depth, perspective);
+        });
+
+        $(".rightDepth").click(function() {
+            depthInput.val(depth + 25);
+            depth = Number(depthInput.val());
+            slider.impulseslider.resize(height, width, depth, perspective);
+        });
+
+        $(".leftPerspective").click(function() {
+            perspectiveInput.val(perspective - 250);
+            perspective = Number(perspectiveInput.val());
+            slider.impulseslider.resize(height, width, depth, perspective);
+        });
+
+        $(".rightPerspective").click(function() {
+            perspectiveInput.val(perspective + 250);
+            perspective = Number(perspectiveInput.val());
+            slider.impulseslider.resize(height, width, depth, perspective);
+        });
+
+        function logEvent(eventName) {
+            var messages = {
+                ready: 'The slideshow is ready.',
+                play: 'The slideshow is playing.',
+                pause: 'The slideshow was paused.',
+                resize: 'The slideshow was resized.',
+                rotate: 'A rotation happened.',
+                rotateLeft: 'A rotation to the left happened.',
+                rotateRight: 'A rotation to the right happened.'
+            };
+            var date = new Date();
+            var dateString = '['+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds()+'.'+date.getMilliseconds()+']';
+            $('#log-container > ul').append(
+                $('<li></li>').text(dateString + ': ' + messages[eventName])
+            );
+        }
+
+    });
+</script>
+
+</body>
+</html>

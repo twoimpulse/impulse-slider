@@ -1,0 +1,86 @@
+ html {
+     font-family: 'Rationale', sans-serif;
+     color: #330033;
+     font-size: 14pt;
+ }
+
+ input {
+     width: 50px;
+ }
+
+ td {
+     padding: 2px;
+ }
+
+.arrow {
+    cursor: pointer;
+    font-weight: normal;
+    padding: 2px;
+    position: relative;
+    -moz-opacity: 0.70;
+    -khtml-opacity: 0.70;
+    opacity: 0.70;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha"(Opacity = 70 );
+    filter: progid:DXImageTransform.Microsoft.Alpha(opacity = 70);
+    filter: alpha(opacity = 70);
+}
+
+
+.arrow:hover {
+    background: #cccccc;
+}
+
+
+
+#slider {
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    -o-transform-style: preserve-3d;
+    transform-style: pre
+}
+
+
+#slider-container {
+    margin-top: 150px;
+    margin-left: 150px;
+}
+
+#slider-container .face {
+    position: absolute;
+}
+
+.face {
+    -moz-opacity: 0.70;
+    -khtml-opacity: 0.70;
+    opacity: 0.70;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha"(Opacity = 70 );
+    filter: progid:DXImageTransform.Microsoft.Alpha(opacity = 70);
+    filter: alpha(opacity = 70);
+}
+
+.nav {
+    padding: 150px 25px 25px 0px;
+}
+
+ .options {
+    padding: 5px;
+}
+
+#log-container {
+    margin-top: 50px;
+    margin-left: 20px;
+}
+
+ #log-container h3 {
+     margin-bottom: 10px;
+ }
+
+ #log-container li {
+     font-size: 0.8em;
+ }
+
+ .nav .playBtn {
+    display: none;
+}
+
+
